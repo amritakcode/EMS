@@ -204,6 +204,7 @@ class Employee:
     #Reading the CSV file 
         header = []
         employee_list = []
+        displayDepart = [] 
         try:
             with open("./resources/employees.csv", "r") as file:
                 read = csv.DictReader(file, ["First Name", "Last Name", "Age", "ID", "Date of Employment", "Salary", "Department"])
@@ -216,18 +217,24 @@ class Employee:
         department = input("Do you want to search employees by their department (Y/N)? ")
         if department == "Y":
             departmentList = []
-            for i in range(len(employee_list)):
-                departmentList.append(employee_list[i].get("Department"))
+        
+            departmentList = [i.get("Department") for i in employee_list]
             print(f"Here is the list of departments available to choose from: {set(departmentList)}")
-            choice = input(print("Which department would you like to see? "))
-            
-
+            choice = input("Which department would you like to see? ")
+            displayDepart = [i for i in departmentList if i == choice]
 
         for i in range(len(employee_list)):
-            id = employee_list[i].get("ID")
-            firstName = employee_list[i].get("First Name")
-            lastName = employee_list[i].get("Last Name")
-            print(f"{id}: {firstName} {lastName}")
+            if not displayDepart:
+                id = employee_list[i].get("ID")
+                firstName = employee_list[i].get("First Name")
+                lastName = employee_list[i].get("Last Name")
+                print(f"{id}: {firstName} {lastName}")
+            else:
+                if displayDepart[0] == employee_list[i].get("Department"):
+                    id = employee_list[i].get("ID")
+                    firstName = employee_list[i].get("First Name")
+                    lastName = employee_list[i].get("Last Name")
+                    print(f"{id}: {firstName} {lastName}")
 
         numID = int(input("Select ID of employee you wish to see the information display: ")) 
         for i in range(len(employee_list)):
