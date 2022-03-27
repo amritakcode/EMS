@@ -1,6 +1,7 @@
 #Import modules
 import csv
 from pprint import pprint
+import re 
 
 #Custom exception
 class NotOption(Exception): pass
@@ -62,7 +63,13 @@ class Employee:
                     raise AgeException
                 firstName = input("Enter your first name: ").capitalize()
                 lastName = input("Enter your last name: ").capitalize()
-                dateOfEmployment = input("Enter your date of employment (MM/DD/YYYY): ") #COME BACK AND DO REGEX & EXCEPTION
+                while True:
+                    dateOfEmployment = input("Enter your date of employment (MM/DD/YYYY): ")
+                    match = re.search("^\d{2}\/\d{2}\/\d{4}$" ,dateOfEmployment)
+                    if match:
+                        break
+                    else:
+                        print("Please enter the correct date in this format - MM/DD/YYYY")
                 try:
                     salary = int(input("Enter your salary (int): "))
                 except ValueError: 
