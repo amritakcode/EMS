@@ -1,7 +1,20 @@
-#Import modules
+#Importing modules
 import csv
 from pprint import pprint
 import re 
+import mysql.connector
+
+#Crating connection object
+mydb = mysql.connector.connect(
+    host = "localhost",
+    user = "root",
+    password = "root",
+    database = "ems_database" 
+)
+
+cursor = mydb.cursor(buffered=True)
+cursor.execute("SELECT * FROM employees")
+
 
 #Custom exception
 class NotOption(Exception): pass
@@ -93,8 +106,9 @@ class Employee:
             employees["Department"] = department
 
             employee_list.append(employees)
+            data_user = (firstName,lastName,age,maxID,dateOfEmployment,salary,department)
+            cursor.execute("""INSERT INTO employees(First_Name, Last_Name, Age, ID, Date_of_Employment, Salary, Department) VALUES(%s,%s,%s,%s,%s,%s,%s)""",data_user)
             counter+=1
-
 
             #Write employee information to the csv file
             try:
@@ -225,22 +239,22 @@ class Employee:
         if department == "Y":
             departmentList = []
         
-            departmentList = [i.get("Department") for i in employee_list]
+            departmentList = [i[6] for i in cursor]
             print(f"Here is the list of departments available to choose from: {set(departmentList)}")
             choice = input("Which department would you like to see? ")
             displayDepart = [i for i in departmentList if i == choice]
 
-        for i in range(len(employee_list)):
+        for i in cursor:
             if not displayDepart:
-                id = employee_list[i].get("ID")
-                firstName = employee_list[i].get("First Name")
-                lastName = employee_list[i].get("Last Name")
+                id = i[3]
+                firstName = i[0]
+                lastName = i[1]
                 print(f"{id}: {firstName} {lastName}")
             else:
-                if displayDepart[0] == employee_list[i].get("Department"):
-                    id = employee_list[i].get("ID")
-                    firstName = employee_list[i].get("First Name")
-                    lastName = employee_list[i].get("Last Name")
+                if displayDepart[0] == i[6]:
+                    id = i[3]
+                    firstName = i[0]
+                    lastName = i[1]
                     print(f"{id}: {firstName} {lastName}")
 
         numID = int(input("Select ID of employee you wish to see the information display: ")) 
