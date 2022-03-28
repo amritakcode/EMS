@@ -88,8 +88,9 @@ class Employee:
                 except ValueError: 
                     print("You can only enter an integer.")
                 department = input("Enter your department: ")
-            except ValueError:
+            except AgeException:
                 print("You must be 18 or older to work.")
+                continue
             
             maxID = 0
             for i in range(len(employee_list)):
@@ -108,6 +109,7 @@ class Employee:
             employee_list.append(employees)
             data_user = (firstName,lastName,age,maxID,dateOfEmployment,salary,department)
             cursor.execute("""INSERT INTO employees(First_Name, Last_Name, Age, ID, Date_of_Employment, Salary, Department) VALUES(%s,%s,%s,%s,%s,%s,%s)""",data_user)
+            mydb.commit()
             counter+=1
 
             #Write employee information to the csv file
@@ -148,14 +150,17 @@ class Employee:
         print("5 for Department")
         
         option = int(input("Select the option number you choose to update: "))
+
         for i in range(len(employee_list)):
             if numID == int(employee_list[i].get("ID")):
                 if option == 1:
                     updateFirstName = input("Enter updated First Name here: ")
                     employee_list[i].update({"First Name" : updateFirstName})
+                    cursor.execute("UPDATE employees SET First_Name = %s WHERE id = %s", (updateFirstName, numID))
                 elif option == 2:
                     updateLastName = input("Enter updated Last Name here: ")
                     employee_list[i].update({"Last Name" : updateLastName})
+                    cursor.execute("UPDATE employees SET Last_Name = %s WHERE id = %s", (updateLastName, numID))
                 elif option == 3:
                     while True:
                         try:
@@ -164,6 +169,7 @@ class Employee:
                         except ValueError:
                             print("Age must be an integer.")
                     employee_list[i].update({"Age" : updateAge})
+                    cursor.execute("UPDATE employees SET Age = %s WHERE id = %s", (updateAge, numID))
                 elif option == 4:
                     while True:
                         try:
@@ -172,10 +178,14 @@ class Employee:
                         except ValueError:
                             print("Salary must be an integer.")
                     employee_list[i].update({"Salary" : updateSalary})
+                    cursor.execute("UPDATE employees SET Salary = %s WHERE id = %s", (updateSalary, numID))
                 elif option == 5:
                     updateDepartment = input("Enter updated Department here: ")
                     employee_list[i].update({"Department" : updateDepartment})
+                    cursor.execute("UPDATE employees SET Department = %s WHERE id = %s", (updateDepartment, numID))
                 break
+
+        mydb.commit()
 
         #Write employee information to the csv file
         try:
@@ -209,7 +219,10 @@ class Employee:
         for i in range(len(employee_list)):
             if numID == int(employee_list[i].get("ID")):
                 employee_list.pop(i)
+                cursor.execute("DELETE FROM employees WHERE id = %s", (f"{numID}", ))
                 break
+
+        mydb.commit()
 
         #Write employee information to the csv file
         try:
@@ -243,6 +256,8 @@ class Employee:
             print(f"Here is the list of departments available to choose from: {set(departmentList)}")
             choice = input("Which department would you like to see? ")
             displayDepart = [i for i in departmentList if i == choice]
+
+        cursor.execute("SELECT * FROM employees")
 
         for i in cursor:
             if not displayDepart:
