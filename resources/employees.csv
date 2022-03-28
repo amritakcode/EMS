@@ -1,3 +1,8 @@
 First Name,Last Name,Age,ID,Date of Employment,Salary,Department
-Namjoon,Kim,27,1,06/13/2013,2000000,rap
-Seokjin,Kim,29,2,06/13/2013,3000000,vocals
+Seokjin,Kim,29,1,06/13/2013,1000000,vocals
+Yoongi,Min,29,2,06/13/2013,2000000,rap
+Hoseok,Jung,28,3,06/13/2013,3000000,rap
+Namjoon,Kim,27,4,06/13/2013,4000000,rap
+Jimin,Park,26,5,06/13/2013,5000000,vocals
+Taehyung,Kim,26,6,06/13/2013,6000000,vocals
+Jungkook,Jeon,24,7,06/13/2013,7000000,vocals
